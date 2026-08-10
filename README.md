@@ -1,22 +1,20 @@
 # DevForge
 
-DevForge is a serious, production-grade developer platform designed to centralize core tools, request playarounds, and advanced .NET engineering challenges into a single extensible ecosystem. This repository serves as an open-source, Clean Architecture-aligned workspace demonstrating professional C#, ASP.NET Core 10, ASP.NET Core MVC, Razor Views, and Docker deployments.
+DevForge is an open-source developer platform that centralizes essential productivity tools, an interactive API request playground, and C#/.NET coding challenges into a single, cohesive workspace. Built with .NET 10 using Clean Architecture principles, it provides a server-rendered ASP.NET Core MVC web interface backed by a decoupled REST API service.
 
 ---
 
 ## Vision
-DevForge aims to bridge the gap between developer productivity utilities and technical skills growth:
-1. **Developer Tools**: Fast, client-side developer tools (JSON Formatter, JWT Decoder, SQL Formatter, Base64 Encoder, HL7 Validator, GUID Generator).
-2. **API Playground**: A complete HTTP request builder (supporting GET/POST/PUT/PATCH/DELETE, headers, params, and collections) acting as a lightweight, browser-based alternative to Postman.
-3. **.NET Interview Challenges**: Comprehensive evaluations covering C#, ASP.NET Core, EF Core, LINQ, SQL Server, security patterns, Azure integrations, and system design.
-4. **User Platform**: Secure account registration, JWT session management, Refresh Token rotation, and role-based preferences.
+DevForge bridges the gap between everyday utility tools and skills growth:
+1. **Developer Tools**: Fast, client-side utility applications (JSON Formatter, JWT Decoder, SQL Formatter, Base64 Encoder, HL7 Validator, and GUID Generator).
+2. **API Playground**: An interactive HTTP client allowing developers to compose requests, modify headers, and debug payloads directly in the browser.
+3. **.NET Engineering Challenges**: Practical C# and system design puzzles covering EF Core, LINQ diagnostics, database query tuning, and security patterns.
+4. **User Platform**: Secure user accounts, session authorization, and preference tracking.
 
 ---
 
-## Current Status
-* **Week 1 Foundation** has been successfully established and verified. 
-* All core system structures, global exception logging, versioned API pipelines, CORS layers, SQL Server EF Core configurations, automated test suites, Docker container orchestrations, and GitHub Actions pipelines are active.
-* Business features (Authentication, Dev Tools, API Playground, Challenges) are scheduled for subsequent milestones.
+## Project Status
+DevForge is under active development. The current implementation establishes the foundational system architecture, API endpoints, persistence layer, structured logging, containerization configurations, and a minimal web interface. Core features are being built incrementally.
 
 ---
 
@@ -32,13 +30,13 @@ DevForge aims to bridge the gap between developer productivity utilities and tec
 * **Diagnostics**: ASP.NET Core Health Checks
 
 ### Frontend
-* **Server Rendering**: ASP.NET Core MVC (Model-View-Controller) & Razor Views
-* **Interactions**: HTML5, Vanilla CSS, Modular JavaScript, and native Fetch API
-* **Fonts**: Google Fonts "Inter" and "JetBrains Mono"
+* **Server Rendering**: ASP.NET Core MVC & Razor Views
+* **Interactions**: HTML5, Vanilla CSS, Modular JavaScript, and Fetch API
+* **Typography**: Google Fonts "Inter"
 
 ### Testing & DevOps
 * **Test Engines**: xUnit, FluentAssertions, `Microsoft.AspNetCore.Mvc.Testing`
-* **Containerization**: Docker, Docker Compose (SQL Server 2022, Web API, Web MVC)
+* **Containerization**: Docker & Docker Compose (SQL Server 2022, Web API, Web MVC)
 * **CI/CD**: GitHub Actions
 
 ---
@@ -96,12 +94,12 @@ DevForge/
    ```bash
    dotnet run
    ```
-3. Open your browser to `http://localhost:5251` or `https://localhost:7246`. The Razor views will render the dashboard, and the modular JavaScript will query the backend API.
+3. Open your browser to `http://localhost:5251` or `https://localhost:7246`. The Razor views will render the landing page, and the modular JavaScript will query the backend API.
 
 ---
 
 ## Running with Docker
-You can run the entire platform (SQL Server database, backend API, and React frontend) inside Docker containers:
+You can run the entire platform (SQL Server, Web API, and Web MVC) inside Docker containers:
 1. Run Docker Compose build and start:
    ```bash
    docker-compose up --build
@@ -123,11 +121,11 @@ dotnet test
 
 ## Roadmap
 
-* **Week 1 - Foundation** *(Completed)*: System architecture, EF Core configuration, global filters, Swagger versioning, Dockerization, and CI.
-* **Week 2 - Authentication & RBAC**: User registrations, JWT logins, Refresh Token rotations, roles and permissions.
-* **Week 3 - Developer Tools**: Release client-side formats (JSON, SQL, JWT, Base64).
-* **Week 4 - API Playground**: HTTP requesting dashboard with header inputs, parameter variables, and saved histories.
-* **Week 5 - .NET Interview Challenge**: C# compiler playgrounds, LINQ diagnostics, and MVC architecture challenges.
-* **Week 6 - Admin & Analytics**: Moderation views, analytics tracking, and telemetry database logs.
-* **Week 7 - Performance, Security & Testing**: Redis caching, SQL indexing, load tests, and security scanning.
-* **Week 8 - Docker, CI/CD & Production Release**: Final cloud deployments, telemetry dashboards, and release compilation.
+* **Milestone 1 - Foundation** *(Completed)*: System architecture, EF Core database mapping, logging, global error filters, Swagger versioning, Dockerization, and CI.
+* **Milestone 2 - Authentication & RBAC**: User registration, JWT logins, Refresh Token rotations, roles and permissions.
+* **Milestone 3 - Productivity Tools**: Client-side formatters and decoders (JSON, SQL, JWT, Base64).
+* **Milestone 4 - API Playground**: HTTP request composer dashboard, request histories, and collections.
+* **Milestone 5 - C# Engineering Challenges**: Compiler sandboxes, LINQ diagnostic challenges, and EF Core tuning puzzles.
+* **Milestone 6 - Telemetry & Observability**: Moderation views, analytics tracking, and telemetry database logs.
+* **Milestone 7 - Caching & Performance**: Redis integration, SQL index tuning, and load testing.
+* **Milestone 8 - Production Release**: Cloud deployment configurations, SSL setups, and final build compilation.
