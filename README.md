@@ -1,6 +1,6 @@
 # DevForge
 
-DevForge is a serious, production-grade developer platform designed to centralize core tools, request playarounds, and advanced .NET engineering challenges into a single extensible ecosystem. This repository serves as an open-source, Clean Architecture-aligned workspace demonstrating professional C#, ASP.NET Core 10, React, and Docker deployments.
+DevForge is a serious, production-grade developer platform designed to centralize core tools, request playarounds, and advanced .NET engineering challenges into a single extensible ecosystem. This repository serves as an open-source, Clean Architecture-aligned workspace demonstrating professional C#, ASP.NET Core 10, ASP.NET Core MVC, Razor Views, and Docker deployments.
 
 ---
 
@@ -22,8 +22,8 @@ DevForge aims to bridge the gap between developer productivity utilities and tec
 
 ## Technology Stack
 
-### Backend
-* **Language/Runtime**: C# 10 / .NET 10.0
+### Backend & API
+* **Language/Runtime**: C# / .NET 10.0
 * **API Framework**: ASP.NET Core Web API (Controllers)
 * **Data Access**: Entity Framework Core 10.0 (SQL Server)
 * **API Documentation**: Swagger / Swashbuckle OpenAPI
@@ -32,14 +32,13 @@ DevForge aims to bridge the gap between developer productivity utilities and tec
 * **Diagnostics**: ASP.NET Core Health Checks
 
 ### Frontend
-* **Runtime/Bundler**: Node.js & Vite
-* **Library/Language**: React 19, TypeScript
-* **Styling**: Tailwind CSS (v4)
-* **Icons**: Lucide React
+* **Server Rendering**: ASP.NET Core MVC (Model-View-Controller) & Razor Views
+* **Interactions**: HTML5, Vanilla CSS, Modular JavaScript, and native Fetch API
+* **Fonts**: Google Fonts "Inter" and "JetBrains Mono"
 
 ### Testing & DevOps
 * **Test Engines**: xUnit, FluentAssertions, `Microsoft.AspNetCore.Mvc.Testing`
-* **Containerization**: Docker, Docker Compose (SQL Server 2022, Web API, React Nginx)
+* **Containerization**: Docker, Docker Compose (SQL Server 2022, Web API, Web MVC)
 * **CI/CD**: GitHub Actions
 
 ---
@@ -49,19 +48,19 @@ DevForge aims to bridge the gap between developer productivity utilities and tec
 ```
 DevForge/
 ├── src/
-│   ├── DevForge.API/            # Presentation Layer (Controllers, Middlewares, Program)
-│   ├── DevForge.Application/    # Application Logic (Interfaces, Result models, Exceptions, DI)
+│   ├── DevForge.Web/            # Frontend Presentation Layer (MVC, Razor Views, CSS, JS)
+│   ├── DevForge.API/            # API Presentation Layer (REST API Controllers, Middlewares)
+│   ├── DevForge.Application/    # Application Layer (Interfaces, Result models, Exceptions, DI)
 │   ├── DevForge.Domain/         # Core Domain Layer (Base Entity, AuditableEntity, System Models)
-│   ├── DevForge.Infrastructure/ # Data Layer (ApplicationDbContext, Configurations, DI, Migrations)
-│   └── DevForge.Web/            # React & TS Vite SPA (Tailwind CSS v4)
+│   └── DevForge.Infrastructure/ # Data Layer (ApplicationDbContext, Configurations, DI, Migrations)
 ├── tests/
 │   ├── DevForge.UnitTests/      # xUnit Unit tests for Domain/Application helpers
 │   └── DevForge.IntegrationTests/ # xUnit WebApplicationFactory Integration tests
 ├── docs/
 │   ├── architecture/            # Architectural flow documentation & Mermaid diagrams
 │   └── api/                     # Endpoint query lists & mock response templates
-├── docker-compose.yml           # Orchestration for SQL Server, Web API, and Nginx Web
-└── DevForge.slnx                 # .NET Solution File
+├── docker-compose.yml           # Orchestration for SQL Server, Web API, and Web MVC
+└── DevForge.slnx                 # Solution File
 ```
 
 ---
@@ -70,7 +69,6 @@ DevForge/
 
 ### Prerequisites
 * .NET 10.0 SDK
-* Node.js v20+ & npm
 * SQL Server instance or Docker Desktop
 
 ### Running the API
@@ -89,24 +87,16 @@ DevForge/
    ```
 5. Access the API Swagger UI at: `https://localhost:7172/swagger/index.html` or `http://localhost:5057/swagger/index.html`.
 
-### Running the Frontend
+### Running the MVC Frontend
 1. Navigate to the Web app folder:
    ```bash
    cd src/DevForge.Web
    ```
-2. Install npm packages:
+2. Start the MVC Web application:
    ```bash
-   npm install
+   dotnet run
    ```
-3. Copy environment configuration:
-   ```bash
-   cp .env.example .env
-   ```
-4. Start the local Vite server:
-   ```bash
-   npm run dev
-   ```
-5. Open your browser to `http://localhost:5173`. The application shell will automatically try to connect to the backend status API.
+3. Open your browser to `http://localhost:5251` or `https://localhost:7246`. The Razor views will render the dashboard, and the modular JavaScript will query the backend API.
 
 ---
 
@@ -117,7 +107,7 @@ You can run the entire platform (SQL Server database, backend API, and React fro
    docker-compose up --build
    ```
 2. Open:
-   * **React Frontend**: `http://localhost:8080` (Served via Nginx)
+   * **DevForge MVC Web App**: `http://localhost:8080` (Served via Kestrel inside the Docker container)
    * **Web API Swagger**: `http://localhost:5000/swagger/index.html`
    * **Database Port**: `localhost,1433` (SQL Server)
 
