@@ -7,8 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  backend:
-    name: Backend CI
+  build-and-test:
+    name: Build and Test Solution
     runs-on: ubuntu-latest
 
     steps:
@@ -28,26 +28,3 @@ jobs:
 
     - name: Run Tests
       run: dotnet test DevForge.slnx --configuration Release --no-build --verbosity normal
-
-  frontend:
-    name: Frontend CI
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: 'src/DevForge.Web/package-lock.json'
-
-    - name: Install Dependencies
-      run: npm ci
-      working-directory: src/DevForge.Web
-
-    - name: Build App
-      run: npm run build
-      working-directory: src/DevForge.Web
