@@ -1,37 +1,28 @@
 # DevForge
 
-DevForge is a clean, extensible platform designed to centralize core developer utilities, HTTP playgrounds, and advanced .NET engineering challenges into a single cohesive workspace.
+DevForge is a serious, production-grade developer platform designed to centralize core tools, request playarounds, and advanced .NET engineering challenges into a single extensible ecosystem. This repository serves as an open-source, Clean Architecture-aligned workspace demonstrating professional C#, ASP.NET Core 10, ASP.NET Core MVC, Razor Views, and Docker deployments.
 
 ---
 
-## Overview
-DevForge is built to provide practical developer tools and sandboxed diagnostic suites running under a production-oriented architectural foundation. It is structured to help developers validate payloads, inspect HTTP requests, and analyze advanced C# coding constructs inside a unified workspace.
+## Vision
+DevForge aims to bridge the gap between developer productivity utilities and technical skills growth:
+1. **Developer Tools**: Fast, client-side developer tools (JSON Formatter, JWT Decoder, SQL Formatter, Base64 Encoder, HL7 Validator, GUID Generator).
+2. **API Playground**: A complete HTTP request builder (supporting GET/POST/PUT/PATCH/DELETE, headers, params, and collections) acting as a lightweight, browser-based alternative to Postman.
+3. **.NET Interview Challenges**: Comprehensive evaluations covering C#, ASP.NET Core, EF Core, LINQ, SQL Server, security patterns, Azure integrations, and system design.
+4. **User Platform**: Secure account registration, JWT session management, Refresh Token rotation, and role-based preferences.
 
 ---
 
-## Architecture
-The platform is designed following **Clean Architecture** patterns to enforce strict separation of concerns and maintain a clean inward dependency flow:
-
-```
-DevForge.Web (MVC Layout) & DevForge.API (REST Controller endpoints)
-    │
-    ▼
-DevForge.Application (Logical Use Cases / FluentValidation / Custom Result Wrappers)
-    │
-    ▼
-DevForge.Domain (Core Entities / Auditable Models / Base Contracts)
-    ▲
-    │
-DevForge.Infrastructure (Entity Framework Core / SQL Server persistence)
-```
-* **Separation of Presentation**: The MVC project serving Razor views is kept thin and delegates execution to the Application layer.
-* **API Independence**: A separate REST Web API layer is maintained to support future third-party, client-side, or mobile integrations.
+## Current Status
+* **Week 1 Foundation** has been successfully established and verified. 
+* All core system structures, global exception logging, versioned API pipelines, CORS layers, SQL Server EF Core configurations, automated test suites, Docker container orchestrations, and GitHub Actions pipelines are active.
+* Business features (Authentication, Dev Tools, API Playground, Challenges) are scheduled for subsequent milestones.
 
 ---
 
 ## Technology Stack
 
-### Backend
+### Backend & API
 * **Language/Runtime**: C# / .NET 10.0
 * **API Framework**: ASP.NET Core Web API (Controllers)
 * **Data Access**: Entity Framework Core 10.0 (SQL Server)
@@ -43,23 +34,38 @@ DevForge.Infrastructure (Entity Framework Core / SQL Server persistence)
 ### Frontend
 * **Server Rendering**: ASP.NET Core MVC (Model-View-Controller) & Razor Views
 * **Interactions**: HTML5, Vanilla CSS, Modular JavaScript, and native Fetch API
+* **Fonts**: Google Fonts "Inter" and "JetBrains Mono"
 
 ### Testing & DevOps
 * **Test Engines**: xUnit, FluentAssertions, `Microsoft.AspNetCore.Mvc.Testing`
-* **Containerization**: Docker & Docker Compose
+* **Containerization**: Docker, Docker Compose (SQL Server 2022, Web API, Web MVC)
+* **CI/CD**: GitHub Actions
 
 ---
 
-## Features
-The current Week 1 release establishes the complete engineering foundation of the platform:
-* **Active Status Health Checks**: A background system health monitor endpoint (`/health`) verifying SQL Server connectivity.
-* **Dynamic Connection Monitoring**: A status diagnostics client (`/api/v1/system/status`) recording transaction counts and latency.
-* **Self-Healing Environment Resolution**: The frontend script automatically detects the host port (IIS Express vs Kestrel profiles) to configure communication parameters seamlessly.
-* **Unified Diagnostics Exceptions**: Global ProblemDetails mapping yielding structured JSON payloads on all pipeline failures.
+## Project Structure
+
+```
+DevForge/
+├── src/
+│   ├── DevForge.Web/            # Frontend Presentation Layer (MVC, Razor Views, CSS, JS)
+│   ├── DevForge.API/            # API Presentation Layer (REST API Controllers, Middlewares)
+│   ├── DevForge.Application/    # Application Layer (Interfaces, Result models, Exceptions, DI)
+│   ├── DevForge.Domain/         # Core Domain Layer (Base Entity, AuditableEntity, System Models)
+│   └── DevForge.Infrastructure/ # Data Layer (ApplicationDbContext, Configurations, DI, Migrations)
+├── tests/
+│   ├── DevForge.UnitTests/      # xUnit Unit tests for Domain/Application helpers
+│   └── DevForge.IntegrationTests/ # xUnit WebApplicationFactory Integration tests
+├── docs/
+│   ├── architecture/            # Architectural flow documentation & Mermaid diagrams
+│   └── api/                     # Endpoint query lists & mock response templates
+├── docker-compose.yml           # Orchestration for SQL Server, Web API, and Web MVC
+└── DevForge.slnx                 # Solution File
+```
 
 ---
 
-## Getting Started
+## Local Development
 
 ### Prerequisites
 * .NET 10.0 SDK
@@ -70,11 +76,16 @@ The current Week 1 release establishes the complete engineering foundation of th
    ```bash
    cd src/DevForge.API
    ```
-2. Start the Web API:
+2. Configure your SQL Server database connection string in `appsettings.Development.json` under `DefaultConnection`.
+3. Apply initial migrations to create the database:
+   ```bash
+   dotnet ef database update
+   ```
+4. Start the Web API:
    ```bash
    dotnet run
    ```
-3. Access the API Swagger UI at: `https://localhost:7172/swagger/index.html` or `http://localhost:5057/swagger/index.html`.
+5. Access the API Swagger UI at: `https://localhost:7172/swagger/index.html` or `http://localhost:5057/swagger/index.html`.
 
 ### Running the MVC Frontend
 1. Navigate to the Web app folder:
@@ -85,64 +96,38 @@ The current Week 1 release establishes the complete engineering foundation of th
    ```bash
    dotnet run
    ```
-3. Open your browser to `http://localhost:5251` or `https://localhost:7246`.
+3. Open your browser to `http://localhost:5251` or `https://localhost:7246`. The Razor views will render the dashboard, and the modular JavaScript will query the backend API.
 
 ---
 
-## Configuration
-To protect credentials, connection settings should not be committed to source control with real passwords.
-
-### 1. Default Connection String
-Default development settings are defined in the project configuration files (`appsettings.Development.json`):
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost;Database=DevForge;User Id=sa;Password=YourLocalPassword123!;TrustServerCertificate=True;"
-}
-```
-
-### 2. Managing Secrets Safely
-To override the default password on your local development machine without editing repository files, use the **.NET User Secrets Tool**:
-1. Initialize secrets in the startup projects:
+## Running with Docker
+You can run the entire platform (SQL Server database, backend API, and React frontend) inside Docker containers:
+1. Run Docker Compose build and start:
    ```bash
-   dotnet user-secrets init --project src/DevForge.API
-   dotnet user-secrets init --project src/DevForge.Web
+   docker-compose up --build
    ```
-2. Set your actual SQL Server connection string:
-   ```bash
-   dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=YOUR_SERVER;Database=DevForge;Persist Security Info=True;User ID=sa;Password=YOUR_ACTUAL_PASSWORD;Encrypt=False;TrustServerCertificate=True;Command Timeout=0;" --project src/DevForge.API
-   dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Data Source=YOUR_SERVER;Database=DevForge;Persist Security Info=True;User ID=sa;Password=YOUR_ACTUAL_PASSWORD;Encrypt=False;TrustServerCertificate=True;Command Timeout=0;" --project src/DevForge.Web
-   ```
-This stores your credentials in your local user profile directory, keeping them completely out of Git history.
+2. Open:
+   * **DevForge MVC Web App**: `http://localhost:8080` (Served via Kestrel inside the Docker container)
+   * **Web API Swagger**: `http://localhost:5000/swagger/index.html`
+   * **Database Port**: `localhost,1433` (SQL Server)
 
 ---
 
-## Running Tests
-Run all unit and integration test suites using the .NET CLI:
+## Testing
+To run the automated xUnit test suites (including unit tests for Result wrappers and integration tests targeting host health / system endpoints):
 ```bash
 dotnet test
 ```
 
 ---
 
-## Running with Docker
-Run the entire platform inside Docker containers:
-1. Start Orchestration:
-   ```bash
-   docker-compose up --build
-   ```
-2. Open:
-   * **DevForge MVC Web App**: `http://localhost:8080`
-   * **Web API Swagger**: `http://localhost:5000/swagger/index.html`
+## Roadmap
 
----
-
-## Development Roadmap
-The following milestones outline the incremental implementation plan:
-* **Week 1 - Foundation** *(Completed)*: Clean Architecture solution, EF Core SQL Server mapping, logging, error filters, Swagger versioning, Dockerization, and CI.
-* **Week 2 - Authentication & RBAC**: Account registration, JWT logins, Refresh Token rotations, roles and permissions.
-* **Week 3 - Developer Tools**: JSON, SQL, JWT, and Base64 formatters and parsers.
-* **Week 4 - API Playground**: HTTP requesting compose sandbox, history logs, and query folder collections.
-* **Week 5 - .NET Engineering Challenge**: Sandboxed C# coding tasks and EF Core index tuning exercises.
-* **Week 6 - Admin & Observer Logs**: Moderation screens, analytics trackers, and event telemetry databases.
-* **Week 7 - Performance & Caching**: Redis caching configurations and database query tuning.
-* **Week 8 - Release Compilation**: Cloud deployments configurations and monitoring systems.
+* **Week 1 - Foundation** *(Completed)*: System architecture, EF Core configuration, global filters, Swagger versioning, Dockerization, and CI.
+* **Week 2 - Authentication & RBAC**: User registrations, JWT logins, Refresh Token rotations, roles and permissions.
+* **Week 3 - Developer Tools**: Release client-side formats (JSON, SQL, JWT, Base64).
+* **Week 4 - API Playground**: HTTP requesting dashboard with header inputs, parameter variables, and saved histories.
+* **Week 5 - .NET Interview Challenge**: C# compiler playgrounds, LINQ diagnostics, and MVC architecture challenges.
+* **Week 6 - Admin & Analytics**: Moderation views, analytics tracking, and telemetry database logs.
+* **Week 7 - Performance, Security & Testing**: Redis caching, SQL indexing, load tests, and security scanning.
+* **Week 8 - Docker, CI/CD & Production Release**: Final cloud deployments, telemetry dashboards, and release compilation.
