@@ -28,5 +28,8 @@ Thumbs.db
 
 ## Docker and Compose
 .dockerignore
-# Do not ignore compose files unless customized
-# compose.override.yml
+
+## Application Logs
+logs/
+*.log
+**/logs/
