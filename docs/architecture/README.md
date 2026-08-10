@@ -75,6 +75,6 @@ DevForge separates page-serving concerns from raw data and business processing:
 
 ### 5. Web Layer (`DevForge.Web`)
 * **Responsibilities**:
-  * Serves the HTML5 structure, custom CSS variables stylesheets (`site.css`), and modular JavaScript files (`api.js`, `site.js`, `system-status.js`).
+  * Serves the HTML5 structure, custom CSS variables stylesheets (`site.css`), and modular JavaScript files (`api.js`, `site.js`).
   * Contains the main Razor Views (`_Layout.cshtml`, `Index.cshtml`).
   * Invokes the API asynchronously using Fetch.
