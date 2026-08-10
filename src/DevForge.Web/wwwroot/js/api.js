@@ -2,7 +2,18 @@
 
 const ApiClient = {
     async get(endpoint) {
-        const baseUrl = window.DevForgeConfig?.apiUrl || 'http://localhost:5057';
+        let baseUrl = window.DevForgeConfig?.apiUrl || 'http://localhost:5057';
+
+        // Auto-detect IIS Express vs Kestrel environment based on the host page port
+        const currentPort = window.location.port;
+        if (currentPort === '44373' || currentPort === '64202') {
+            // Running Web under IIS Express. Map to IIS Express API ports
+            baseUrl = window.location.protocol === 'https:' ? 'https://localhost:44305' : 'http://localhost:64153';
+        } else if (currentPort === '7246' || currentPort === '5251') {
+            // Running Web under Kestrel. Map to Kestrel API ports
+            baseUrl = window.location.protocol === 'https:' ? 'https://localhost:7172' : 'http://localhost:5057';
+        }
+
         const url = `${baseUrl}${endpoint}`;
 
         const controller = new AbortController();
