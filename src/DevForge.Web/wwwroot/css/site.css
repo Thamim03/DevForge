@@ -121,7 +121,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Navbar Branding & Navigation System */
 .custom-header {
   background-color: var(--card-bg);
-  border-b: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
@@ -291,164 +291,56 @@ html.dark .theme-toggle-btn .sun-icon { display: block; }
 /* Hero Section */
 .hero-section {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 48px;
 }
 
 .hero-title {
   font-size: 3.5rem;
   font-weight: 800;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: var(--text-heading);
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  max-width: 700px;
-  margin: 0 auto 32px;
-  line-height: 1.6;
-}
-
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  text-decoration: none;
-  box-shadow: 0 4px 12px var(--primary-glow);
-  transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-1px);
-}
-
-.btn-secondary {
-  background-color: var(--card-bg);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-  padding: 12px 24px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background-color: var(--border-color);
+  font-size: 1.5rem;
+  font-weight: 500;
   color: var(--text-heading);
-  transform: translateY(-1px);
+  margin-bottom: 16px;
 }
 
-/* Cards & Columns Layout */
-.features-grid {
-  display: grid;
-  grid-template-cols: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
-  margin-bottom: 60px;
+.hero-support {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
 }
 
-.card-wrapper {
+/* Product Statement Section */
+.product-statement {
+  max-width: 800px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.statement-card {
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 40px;
   box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
 }
 
-.card-wrapper:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+.statement-title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: var(--text-heading);
 }
 
-.card-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.card-icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  background-color: var(--accent-bg);
-  color: var(--accent-color);
-}
-
-.badge-text {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 40px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.badge-blue { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-.badge-purple { background-color: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-.badge-amber { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-
-.card-title {
-  font-size: 1.25rem;
-  margin-bottom: 12px;
-}
-
-.card-desc {
-  font-size: 0.875rem;
-  line-height: 1.5;
+.statement-body {
+  font-size: 1.05rem;
+  line-height: 1.6;
   color: var(--text-muted);
-  margin-bottom: 24px;
-  flex: 1;
-}
-
-.card-list {
-  border-top: 1px solid var(--border-color);
-  padding-top: 20px;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.card-list-item {
-  font-size: 0.8rem;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-list-item::before {
-  content: "";
-  display: inline-block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
 }
 
 /* Technical Terminal Display Panel */
@@ -466,7 +358,7 @@ html.dark .theme-toggle-btn .sun-icon { display: block; }
 
 .terminal-header {
   background-color: rgba(0,0,0,0.25);
-  border-b: 1px solid var(--terminal-border);
+  border-bottom: 1px solid var(--terminal-border);
   padding: 14px 20px;
   display: flex;
   align-items: center;
@@ -607,87 +499,4 @@ html.dark .theme-toggle-btn .sun-icon { display: block; }
 .footer-copy {
   font-size: 0.875rem;
   color: var(--text-muted);
-}
-
-/* Roadmap Grid View */
-.roadmap-section {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 32px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.roadmap-title {
-  font-size: 1.75rem;
-  margin-bottom: 8px;
-}
-
-.roadmap-desc {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  margin-bottom: 32px;
-}
-
-.roadmap-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.roadmap-item {
-  display: flex;
-  gap: 16px;
-}
-
-.roadmap-badge {
-  background-color: var(--border-color);
-  color: var(--text-main);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  shrink: 0;
-}
-
-.roadmap-item.completed .roadmap-badge {
-  background-color: var(--success-bg);
-  color: var(--success-color);
-  border: 1px solid var(--success-border);
-}
-
-.roadmap-content {
-  flex: 1;
-}
-
-.roadmap-item-title {
-  font-size: 1rem;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.roadmap-item-desc {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-.roadmap-item-status {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-.roadmap-status-done {
-  background-color: var(--success-bg);
-  color: var(--success-color);
 }
