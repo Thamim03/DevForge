@@ -115,7 +115,7 @@ try
     Log.Information("Host built and successfully configured. Starting app...");
     app.Run();
 }
-catch (Exception ex)
+catch (Exception ex) when (ex.GetType().Name is not "HostAbortedException")
 {
     Log.Fatal(ex, "Host terminated unexpectedly during bootstrapping.");
 }
@@ -123,3 +123,5 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+public partial class Program { }

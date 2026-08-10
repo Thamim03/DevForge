@@ -20,8 +20,17 @@ public static class DependencyInjection
         }
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString,
-                builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+        {
+            if (connectionString.Contains("Mode=Memory") || connectionString.Contains("DataSource=:memory:") || connectionString.Contains("Data Source=:memory:"))
+            {
+                options.UseSqlite(connectionString);
+            }
+            else
+            {
+                options.UseSqlServer(connectionString,
+                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+            }
+        });
 
         // Register Database health check
         services.AddHealthChecks()
