@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DevForge.API/DevForge.API.csproj" />
+    <Project Path="src/DevForge.Application/DevForge.Application.csproj" />
+    <Project Path="src/DevForge.Domain/DevForge.Domain.csproj" />
+    <Project Path="src/DevForge.Infrastructure/DevForge.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DevForge.IntegrationTests/DevForge.IntegrationTests.csproj" />
+    <Project Path="tests/DevForge.UnitTests/DevForge.UnitTests.csproj" />
+  </Folder>
+</Solution>
