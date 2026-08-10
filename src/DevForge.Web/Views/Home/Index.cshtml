@@ -1,8 +1,220 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- TAB 1: DASHBOARD VIEW -->
+<div id="dashboard" data-tab-content="dashboard">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="hero-title">DevForge</h1>
+        <p class="hero-subtitle">
+            Developer tools, API utilities and .NET engineering challenges built for serious production environments.
+        </p>
+        <div class="hero-buttons">
+            <button class="btn-primary" onclick="alert('Developer Tools will be available in Week 3!')">Explore Tools</button>
+            <button class="btn-secondary" onclick="document.querySelector('[data-tab-target=roadmap]').click()">View Roadmap</button>
+        </div>
+    </section>
+
+    <!-- Core Feature Cards Grid -->
+    <section class="features-grid">
+        <!-- Card 1: Developer Tools -->
+        <div class="card-wrapper">
+            <div class="card-header-row">
+                <div class="card-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                </div>
+                <span class="badge-text badge-blue">Week 3</span>
+            </div>
+            <h3 class="card-title">Developer Tools</h3>
+            <p class="card-desc">
+                Essential utilities running entirely client-side for rapid formatting, encoding, and schema parsing without network latency.
+            </p>
+            <ul class="card-list">
+                <li class="card-list-item">JSON Formatter & Validator</li>
+                <li class="card-list-item">JWT Decoder & Inspector</li>
+                <li class="card-list-item">Base64 Encoder / Decoder</li>
+                <li class="card-list-item">SQL Formatter & HL7 Parser</li>
+            </ul>
+        </div>
+
+        <!-- Card 2: API Playground -->
+        <div class="card-wrapper">
+            <div class="card-header-row">
+                <div class="card-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                </div>
+                <span class="badge-text badge-purple">Week 4</span>
+            </div>
+            <h3 class="card-title">API Playground</h3>
+            <p class="card-desc">
+                An interactive HTTP client permitting developers to build requests, modify headers, and debug payloads within visual tabs.
+            </p>
+            <ul class="card-list">
+                <li class="card-list-item">REST Composer (GET/POST/PUT/...)</li>
+                <li class="card-list-item">Headers & Query Parameters</li>
+                <li class="card-list-item">Saved Request History</li>
+                <li class="card-list-item">Query Collection Folders</li>
+            </ul>
+        </div>
+
+        <!-- Card 3: .NET Engineering Challenges -->
+        <div class="card-wrapper">
+            <div class="card-header-row">
+                <div class="card-icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <span class="badge-text badge-amber">Week 5</span>
+            </div>
+            <h3 class="card-title">.NET Challenges</h3>
+            <p class="card-desc">
+                Advanced coding assignments and architecture challenges tailored for C# and ASP.NET Core system designs.
+            </p>
+            <ul class="card-list">
+                <li class="card-list-item">C# and LINQ Diagnostic Tasks</li>
+                <li class="card-list-item">ASP.NET Core Performance Tuning</li>
+                <li class="card-list-item">SQL Indexing & Query Tuning</li>
+                <li class="card-list-item">Clean Architecture Case Studies</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Technical Status Console Panel -->
+    <section class="terminal-panel">
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <span class="terminal-dot dot-red"></span>
+                <span class="terminal-dot dot-yellow"></span>
+                <span class="terminal-dot dot-green"></span>
+            </div>
+            <span class="terminal-title">terminal://devforge-status-client</span>
+            <button id="refresh-status-btn" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0;" title="Force status query">
+                <!-- Refresh SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+            </button>
+        </div>
+        <div class="terminal-body">
+            <div class="terminal-grid">
+                <!-- Column 1: Client logs -->
+                <div>
+                    <h4 class="terminal-col-title">Client Details</h4>
+                    <div class="terminal-row">
+                        <span class="terminal-label">Target Url:</span>
+                        <span id="term-target" class="terminal-value">-</span>
+                    </div>
+                    <div class="terminal-row">
+                        <span class="terminal-label">Connection:</span>
+                        <span id="term-connection" class="terminal-value">-</span>
+                    </div>
+                </div>
+
+                <!-- Column 2: Backend stats -->
+                <div>
+                    <h4 class="terminal-col-title">Service State</h4>
+                    <div class="terminal-row">
+                        <span class="terminal-label">Application:</span>
+                        <span id="term-app-name" class="terminal-value" style="color: var(--primary-color);">-</span>
+                    </div>
+                    <div class="terminal-row">
+                        <span class="terminal-label">Version:</span>
+                        <span id="term-version" class="terminal-value">-</span>
+                    </div>
+                    <div class="terminal-row">
+                        <span class="terminal-label">Database:</span>
+                        <span id="term-db" class="terminal-value">-</span>
+                    </div>
+                    <div class="terminal-row">
+                        <span class="terminal-label">Total Logs:</span>
+                        <span id="term-checks" class="terminal-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal status logs area -->
+            <div id="term-logs" class="terminal-log" style="margin-top: 24px;">
+                Connecting to endpoint client...
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- TAB 2: ROADMAP VIEW -->
+<div id="roadmap" data-tab-content="roadmap" style="display: none;">
+    <section class="roadmap-section">
+        <h2 class="roadmap-title">Implementation Roadmap</h2>
+        <p class="roadmap-desc">
+            DevForge is developed in 8 separate milestones.
+        </p>
+
+        <div class="roadmap-timeline">
+            <!-- Week 1 -->
+            <div class="roadmap-item completed">
+                <div class="roadmap-badge">1</div>
+                <div class="roadmap-content">
+                    <h4 class="roadmap-item-title">
+                        Foundation Setup
+                        <span class="roadmap-item-status roadmap-status-done">Completed</span>
+                    </h4>
+                    <p class="roadmap-item-desc">
+                        Solution architecture, Serilog logging, EF Core integration, API versioning, CORS configurations, health checks, unit/integration testing framework, and Docker local containers.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Week 2 -->
+            <div class="roadmap-item">
+                <div class="roadmap-badge">2</div>
+                <div class="roadmap-content">
+                    <h4 class="roadmap-item-title">Authentication & RBAC</h4>
+                    <p class="roadmap-item-desc">
+                        User registration, login endpoint, JWT authorization, Refresh Token rotation, and role-based permissions filtering.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Week 3 -->
+            <div class="roadmap-item">
+                <div class="roadmap-badge">3</div>
+                <div class="roadmap-content">
+                    <h4 class="roadmap-item-title">Developer Tools Module</h4>
+                    <p class="roadmap-item-desc">
+                        Adding client-side utilities including JSON formatters, JWT decoders, SQL beautifiers, and HL7 parsers.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Week 4 -->
+            <div class="roadmap-item">
+                <div class="roadmap-badge">4</div>
+                <div class="roadmap-content">
+                    <h4 class="roadmap-item-title">API Playground</h4>
+                    <p class="roadmap-item-desc">
+                        HTTP client sandbox providing request builders, parameter setups, collection organization, and history logging.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Week 5 -->
+            <div class="roadmap-item">
+                <div class="roadmap-badge">5</div>
+                <div class="roadmap-content">
+                    <h4 class="roadmap-item-title">.NET Coding Challenges</h4>
+                    <p class="roadmap-item-desc">
+                        Assessing developers with sandboxed C# compiler exercises, LINQ diagnostic logs, and EF Core tuning puzzles.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Week 6+ -->
+            <div class="roadmap-item">
+                <div class="roadmap-badge">6+</div>
+                <div class="roadmap-content">
+                    <h4 class="roadmap-item-title">Administration, Telemetry & Release</h4>
+                    <p class="roadmap-item-desc">
+                        Moderation logs, Redis caching, telemetry dashboards, performance tuning, and cloud deployments.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
