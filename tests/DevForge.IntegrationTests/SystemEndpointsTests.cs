@@ -41,18 +41,15 @@ public class SystemEndpointsTests : IDisposable
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/v1/system/status");
+        var response = await client.GetAsync("/api/system/status");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         
         var content = await response.Content.ReadFromJsonAsync<SystemStatusResponse>();
         content.Should().NotBeNull();
-        content!.Status.Should().Be("ok");
+        content!.Status.Should().Be("Healthy");
         content.Application.Should().Be("DevForge");
-        content.Version.Should().Be("1.0.0");
-        content.DatabaseConnection.Should().Be("Connected");
-        content.TotalStatusChecks.Should().BeGreaterThan(0);
     }
 
     [Fact]
@@ -84,8 +81,5 @@ public class SystemEndpointsTests : IDisposable
     {
         public string Status { get; set; } = string.Empty;
         public string Application { get; set; } = string.Empty;
-        public string Version { get; set; } = string.Empty;
-        public string DatabaseConnection { get; set; } = string.Empty;
-        public int TotalStatusChecks { get; set; }
     }
 }

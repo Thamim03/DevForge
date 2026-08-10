@@ -1,9 +1,7 @@
-using Asp.Versioning;
 using Serilog;
 using DevForge.Application;
 using DevForge.Infrastructure;
 using DevForge.API.Middleware;
-using DevForge.API;
 
 // Configure bootstrap logging first
 Log.Logger = new LoggerConfiguration()
@@ -60,22 +58,7 @@ try
         });
     });
 
-    // Configure API Versioning
-    builder.Services.AddApiVersioning(options =>
-    {
-        options.DefaultApiVersion = new ApiVersion(1, 0);
-        options.ReportApiVersions = true;
-        options.ApiVersionReader = new UrlSegmentApiVersionReader();
-    })
-    .AddMvc()
-    .AddApiExplorer(options =>
-    {
-        options.GroupNameFormat = "'v'VVV";
-        options.SubstituteApiVersionInUrl = true;
-    });
-
-    // Configure Swagger with custom options for versioning
-    builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+    // Configure Swagger/OpenAPI
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
@@ -91,13 +74,7 @@ try
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
-            var descriptions = app.DescribeApiVersions();
-            foreach (var description in descriptions)
-            {
-                var url = $"/swagger/{description.GroupName}/swagger.json";
-                var name = description.GroupName.ToUpperInvariant();
-                options.SwaggerEndpoint(url, name);
-            }
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "DevForge API v1");
         });
     }
 

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            await window.ApiClient.get('/api/v1/system/status');
+            await window.ApiClient.get('/api/system/status');
 
             // Update status badge to online
             if (statusBadge) {

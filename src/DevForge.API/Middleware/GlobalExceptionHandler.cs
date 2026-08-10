@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using DevForge.Application.Common.Exceptions;
 
 namespace DevForge.API.Middleware;
 
@@ -23,36 +22,17 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         _logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
 
-        var (statusCode, title, detail, errors) = exception switch
-        {
-            ValidationException validationException => (
-                StatusCodes.Status400BadRequest,
-                "Validation Error",
-                "One or more validation failures occurred.",
-                validationException.Errors),
-            _ => (
-                StatusCodes.Status500InternalServerError,
-                "Internal Server Error",
-                "An unexpected error occurred on the server. Please contact support.",
-                null)
-        };
-
         var problemDetails = new ProblemDetails
         {
-            Status = statusCode,
-            Title = title,
-            Detail = detail,
+            Status = StatusCodes.Status500InternalServerError,
+            Title = "Internal Server Error",
+            Detail = "An unexpected error occurred on the server. Please contact support.",
             Instance = httpContext.Request.Path
         };
 
         problemDetails.Extensions["traceId"] = httpContext.TraceIdentifier;
 
-        if (errors is not null)
-        {
-            problemDetails.Extensions["errors"] = errors;
-        }
-
-        httpContext.Response.StatusCode = statusCode;
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
         httpContext.Response.ContentType = "application/problem+json";
 
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);

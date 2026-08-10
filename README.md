@@ -1,20 +1,29 @@
 # DevForge
 
-DevForge is an open-source developer platform that centralizes essential productivity tools, an interactive API request playground, and C#/.NET coding challenges into a single, cohesive workspace. Built with .NET 10 using Clean Architecture principles, it provides a server-rendered ASP.NET Core MVC web interface backed by a decoupled REST API service.
+DevForge is a developer-focused platform built with .NET 10 using Clean Architecture principles. It provides a server-rendered ASP.NET Core MVC web interface backed by a decoupled REST API service.
 
 ---
 
 ## Vision
-DevForge bridges the gap between everyday utility tools and skills growth:
-1. **Developer Tools**: Fast, client-side utility applications (JSON Formatter, JWT Decoder, SQL Formatter, Base64 Encoder, HL7 Validator, and GUID Generator).
-2. **API Playground**: An interactive HTTP client allowing developers to compose requests, modify headers, and debug payloads directly in the browser.
-3. **.NET Engineering Challenges**: Practical C# and system design puzzles covering EF Core, LINQ diagnostics, database query tuning, and security patterns.
-4. **User Platform**: Secure user accounts, session authorization, and preference tracking.
+DevForge is designed to bring practical developer utilities and engineering workflows into one focused workspace:
+1. **Developer Tools**: Practical client-side utility applications.
+2. **API Testing**: Decoupled backend REST API integration.
+3. **Robust Engineering**: Built on top of clean architecture, dependency injection, structured logging, health checks, and global exception handling.
 
 ---
 
 ## Project Status
-DevForge is under active development. The current implementation establishes the foundational system architecture, API endpoints, persistence layer, structured logging, containerization configurations, and a minimal web interface. Core features are being built incrementally.
+DevForge Week 1 foundation is complete, establishing a clean ASP.NET Core MVC + Web API application with:
+* Clean Architecture
+* EF Core
+* SQL Server
+* Dependency Injection
+* Global Exception Handling
+* Structured Logging
+* Health Checks
+* Swagger / OpenAPI
+* Unit & Integration Testing
+* Clean Product UI
 
 ---
 
@@ -26,7 +35,6 @@ DevForge is under active development. The current implementation establishes the
 * **Data Access**: Entity Framework Core 10.0 (SQL Server)
 * **API Documentation**: Swagger / Swashbuckle OpenAPI
 * **Structured Logging**: Serilog (Console & File rolling sinks)
-* **Validation**: FluentValidation
 * **Diagnostics**: ASP.NET Core Health Checks
 
 ### Frontend
@@ -36,7 +44,6 @@ DevForge is under active development. The current implementation establishes the
 
 ### Testing & DevOps
 * **Test Engines**: xUnit, FluentAssertions, `Microsoft.AspNetCore.Mvc.Testing`
-* **Containerization**: Docker & Docker Compose (SQL Server 2022, Web API, Web MVC)
 * **CI/CD**: GitHub Actions
 
 ---
@@ -48,16 +55,15 @@ DevForge/
 ├── src/
 │   ├── DevForge.Web/            # Frontend Presentation Layer (MVC, Razor Views, CSS, JS)
 │   ├── DevForge.API/            # API Presentation Layer (REST API Controllers, Middlewares)
-│   ├── DevForge.Application/    # Application Layer (Interfaces, Result models, Exceptions, DI)
+│   ├── DevForge.Application/    # Application Layer (Interfaces, DI, etc.)
 │   ├── DevForge.Domain/         # Core Domain Layer (Base Entity, AuditableEntity, System Models)
 │   └── DevForge.Infrastructure/ # Data Layer (ApplicationDbContext, Configurations, DI, Migrations)
 ├── tests/
-│   ├── DevForge.UnitTests/      # xUnit Unit tests for Domain/Application helpers
+│   ├── DevForge.UnitTests/      # xUnit Unit tests
 │   └── DevForge.IntegrationTests/ # xUnit WebApplicationFactory Integration tests
 ├── docs/
 │   ├── architecture/            # Architectural flow documentation & Mermaid diagrams
 │   └── api/                     # Endpoint query lists & mock response templates
-├── docker-compose.yml           # Orchestration for SQL Server, Web API, and Web MVC
 └── DevForge.slnx                 # Solution File
 ```
 
@@ -67,7 +73,7 @@ DevForge/
 
 ### Prerequisites
 * .NET 10.0 SDK
-* SQL Server instance or Docker Desktop
+* Local SQL Server instance
 
 ### Running the API
 1. Navigate to the API project folder:
@@ -98,34 +104,8 @@ DevForge/
 
 ---
 
-## Running with Docker
-You can run the entire platform (SQL Server, Web API, and Web MVC) inside Docker containers:
-1. Run Docker Compose build and start:
-   ```bash
-   docker-compose up --build
-   ```
-2. Open:
-   * **DevForge MVC Web App**: `http://localhost:8080` (Served via Kestrel inside the Docker container)
-   * **Web API Swagger**: `http://localhost:5000/swagger/index.html`
-   * **Database Port**: `localhost,1433` (SQL Server)
-
----
-
 ## Testing
-To run the automated xUnit test suites (including unit tests for Result wrappers and integration tests targeting host health / system endpoints):
+To run the automated xUnit test suites (including unit tests and integration tests targeting host health and system status endpoints):
 ```bash
 dotnet test
 ```
-
----
-
-## Roadmap
-
-* **Milestone 1 - Foundation** *(Completed)*: System architecture, EF Core database mapping, logging, global error filters, Swagger versioning, Dockerization, and CI.
-* **Milestone 2 - Authentication & RBAC**: User registration, JWT logins, Refresh Token rotations, roles and permissions.
-* **Milestone 3 - Productivity Tools**: Client-side formatters and decoders (JSON, SQL, JWT, Base64).
-* **Milestone 4 - API Playground**: HTTP request composer dashboard, request histories, and collections.
-* **Milestone 5 - C# Engineering Challenges**: Compiler sandboxes, LINQ diagnostic challenges, and EF Core tuning puzzles.
-* **Milestone 6 - Telemetry & Observability**: Moderation views, analytics tracking, and telemetry database logs.
-* **Milestone 7 - Caching & Performance**: Redis integration, SQL index tuning, and load testing.
-* **Milestone 8 - Production Release**: Cloud deployment configurations, SSL setups, and final build compilation.

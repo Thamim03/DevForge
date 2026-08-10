@@ -35,14 +35,14 @@ flowchart TD
 
 ---
 
-## Architectural Principle
+## Architectural Principles
 
 DevForge separates page-serving concerns from raw data and business processing:
-1. **Server-Rendered Pages**: Server composition via Razor Views delivers fast initial loads, SEO indexing benefits, and simple server-side state tracking.
+1. **Server-Rendered Pages**: Server composition via Razor Views delivers fast initial loads and simple server-side state tracking.
 2. **Interactive JavaScript Features**: Dynamic UI tasks (like the connection status logs check) execute async Fetch calls to keep page states interactive without triggering full reloads.
-3. **Reusable APIs**: Maintaining `DevForge.API` separately from MVC controllers guarantees that core platform services remain reusable for mobile apps, desktop clients, or third-party integrations in the future.
+3. **Reusable APIs**: Maintaining `DevForge.API` separately from MVC controllers guarantees that core platform services remain reusable for other clients in the future.
 4. **Clean Separation**: MVC controllers remain thin, serving Views or processing simple ViewModel conversions. Business rules reside strictly inside the Application and Domain layers.
-5. **Future React/Mobile Clients**: The API is CORS-enabled and decouples business logic, facilitating future SPA integrations if required.
+5. **Decoupled Architecture**: The API is CORS-enabled and decouples business logic, facilitating future SPA integrations if required.
 
 ---
 
@@ -57,9 +57,7 @@ DevForge separates page-serving concerns from raw data and business processing:
 ### 2. Application Layer (`DevForge.Application`)
 * **Independence**: Depends only on the Domain layer.
 * **Responsibilities**:
-  * Standard operations flow wrappers (`Result`, `Result<TValue>`, `Error`).
-  * Custom exception classes (e.g. `ValidationException`).
-  * FluentValidation rules registrations.
+  * Application interfaces, business logic components, and dependency injection setup.
 
 ### 3. Infrastructure Layer (`DevForge.Infrastructure`)
 * **Independence**: Implements Application contracts and references the Domain.
@@ -72,7 +70,7 @@ DevForge separates page-serving concerns from raw data and business processing:
 * **Responsibilities**:
   * Exposes reusable REST endpoints (e.g., `SystemController` status checks).
   * Global exception diagnostic handlers (`GlobalExceptionHandler`) yielding unified ProblemDetails JSON payloads.
-  * Versioning, CORS permissions, and Swagger UI specifications.
+  * CORS permissions and Swagger UI specifications.
   * Structured Serilog logging.
 
 ### 5. Web Layer (`DevForge.Web`)
