@@ -4,6 +4,7 @@
     <Project Path="src/DevForge.Application/DevForge.Application.csproj" />
     <Project Path="src/DevForge.Domain/DevForge.Domain.csproj" />
     <Project Path="src/DevForge.Infrastructure/DevForge.Infrastructure.csproj" />
+    <Project Path="src/DevForge.Web/DevForge.Web.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/DevForge.IntegrationTests/DevForge.IntegrationTests.csproj" />
