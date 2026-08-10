@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DevForge</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link class="main-css" rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script>
         // Inject configuration variables directly from appsettings.json into Javascript context
         window.DevForgeConfig = {
@@ -15,24 +15,18 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Minimal Product Header -->
+        <!-- Minimal Header -->
         <header class="custom-header">
             <div class="header-container">
                 <div class="flex items-center">
                     <a class="logo-link" asp-controller="Home" asp-action="Index">
                         <div class="logo-icon-bg">
-                            <!-- Raw SVG Terminal Icon -->
+                            <!-- SVG Terminal Icon -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
                         </div>
                         <span class="logo-text-gradient">DevForge</span>
                     </a>
                 </div>
-
-                <!-- Simple Available Product Navigation -->
-                <nav class="header-nav">
-                    <a class="nav-tab-button active" asp-controller="Home" asp-action="Index">Home</a>
-                    <a class="nav-tab-button" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
-                </nav>
 
                 <div class="header-actions">
                     <!-- Dynamic API Status Badge -->
@@ -52,22 +46,18 @@
             </div>
         </header>
 
-        <!-- Main Body Content -->
+        <!-- Main Content -->
         <main role="main" class="content-main">
             @RenderBody()
         </main>
 
-        <!-- Product Footer -->
+        <!-- Minimal Footer -->
         <footer class="custom-footer">
             <div class="footer-container">
                 <div class="footer-brand">
                     <!-- SVG Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
                     <span>DevForge Developer Platform</span>
-                </div>
-                <div class="footer-links">
-                    <a asp-controller="Home" asp-action="Index" class="footer-link">Home</a>
-                    <a href="https://github.com" target="_blank" rel="noopener" class="footer-link">GitHub</a>
                 </div>
                 <div class="footer-copy">
                     &copy; @DateTime.UtcNow.Year DevForge. Open source MIT License.
