@@ -31,10 +31,12 @@ services:
     build:
       context: .
       dockerfile: src/DevForge.Web/Dockerfile
-      args:
-        - VITE_API_URL=http://localhost:5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=DevForge;User Id=sa;Password=DevForgeLocalPassword123!;TrustServerCertificate=True;
+      - ApiSettings__BaseUrl=http://localhost:5000
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - api
 
