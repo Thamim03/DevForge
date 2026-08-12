@@ -16,6 +16,9 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<SystemStatusInfo> SystemStatuses => Set<SystemStatusInfo>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

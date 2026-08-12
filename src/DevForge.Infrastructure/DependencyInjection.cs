@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DevForge.Application.Common.Interfaces;
 using DevForge.Infrastructure.Persistence;
+using DevForge.Infrastructure.Services;
 
 namespace DevForge.Infrastructure;
 
@@ -21,7 +23,10 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            if (connectionString.Contains("Mode=Memory") || connectionString.Contains("DataSource=:memory:") || connectionString.Contains("Data Source=:memory:"))
+            if (connectionString.Contains("Mode=Memory") || 
+                connectionString.Contains("DataSource=:memory:") || 
+                connectionString.Contains("Data Source=:memory:") ||
+                connectionString.Contains(".db"))
             {
                 options.UseSqlite(connectionString);
             }
@@ -35,6 +40,10 @@ public static class DependencyInjection
         // Register Database health check
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>("Database");
+
+        // Register Authentication & Initialization Services
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<DbContextInitializer>();
 
         return services;
     }

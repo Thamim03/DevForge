@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using FluentAssertions;
 using DevForge.Infrastructure.Persistence;
 using Microsoft.Data.Sqlite;
@@ -18,15 +19,14 @@ public class SystemEndpointsTests : IDisposable
 
     public SystemEndpointsTests()
     {
-        // Set the environment variable BEFORE creating WebApplicationFactory
-        // This ensures WebApplication.CreateBuilder(args) reads the SQLite connection string in the test process.
-        Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection", "Data Source=DevForgeTestDb;Mode=Memory;Cache=Shared");
-
         // Open a master connection to keep the shared SQLite in-memory database alive
         _sqliteConnection = new SqliteConnection("Data Source=DevForgeTestDb;Mode=Memory;Cache=Shared");
         _sqliteConnection.Open();
 
-        _factory = new WebApplicationFactory<Program>();
+        _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseSetting("ConnectionStrings:DefaultConnection", "Data Source=DevForgeTestDb;Mode=Memory;Cache=Shared");
+        });
 
         // Ensure the database schema is created on the SQLite instance
         using var scope = _factory.Services.CreateScope();

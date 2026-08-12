@@ -1,0 +1,160 @@
+@{
+    ViewData["Title"] = "JSON Formatter & Validator";
+}
+
+<div class="tool-container">
+    <div class="tool-header">
+        <h1 class="tool-title">JSON Formatter & Validator</h1>
+        <p class="tool-subtitle">Validate, beautify, format, and minify your JSON data in real-time.</p>
+    </div>
+
+    <div class="tool-workspace">
+        <!-- Input Panel -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <span class="panel-title">Paste Input JSON</span>
+                <div class="panel-actions">
+                    <button id="btnClear" class="btn btn-secondary btn-sm">Clear</button>
+                </div>
+            </div>
+            <textarea id="jsonInput" class="code-editor" placeholder='{ "name": "DevForge", "type": "platform", "features": ["auth", "json-formatter", "jwt-inspector"] }'></textarea>
+            
+            <div class="panel-controls">
+                <button id="btnFormat" class="btn btn-primary">Format / Beautify</button>
+                <button id="btnMinify" class="btn btn-secondary">Minify</button>
+                <button id="btnValidate" class="btn btn-secondary">Validate</button>
+            </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <span class="panel-title">Result Output</span>
+                <div class="panel-actions">
+                    <button id="btnCopy" class="btn btn-secondary btn-sm" disabled>Copy Result</button>
+                </div>
+            </div>
+            <div class="output-wrapper">
+                <textarea id="jsonOutput" class="code-editor" readonly placeholder="Result output will appear here..."></textarea>
+            </div>
+
+            <!-- Status Indicator -->
+            <div id="statusAlert" class="status-alert hidden">
+                <span class="status-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const jsonInput = document.getElementById('jsonInput');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const btnClear = document.getElementById('btnClear');
+            const btnFormat = document.getElementById('btnFormat');
+            const btnMinify = document.getElementById('btnMinify');
+            const btnValidate = document.getElementById('btnValidate');
+            const btnCopy = document.getElementById('btnCopy');
+            const statusAlert = document.getElementById('statusAlert');
+            const statusMessage = statusAlert.querySelector('.status-message');
+
+            const showStatus = (message, type) => {
+                statusAlert.className = `status-alert ${type}`;
+                statusMessage.textContent = message;
+                statusAlert.classList.remove('hidden');
+            };
+
+            const clearStatus = () => {
+                statusAlert.className = 'status-alert hidden';
+                statusMessage.textContent = '';
+            };
+
+            btnClear.addEventListener('click', () => {
+                jsonInput.value = '';
+                jsonOutput.value = '';
+                btnCopy.disabled = true;
+                clearStatus();
+            });
+
+            btnCopy.addEventListener('click', () => {
+                if (jsonOutput.value) {
+                    navigator.clipboard.writeText(jsonOutput.value)
+                        .then(() => {
+                            const originalText = btnCopy.textContent;
+                            btnCopy.textContent = 'Copied!';
+                            btnCopy.classList.add('btn-success');
+                            setTimeout(() => {
+                                btnCopy.textContent = originalText;
+                                btnCopy.classList.remove('btn-success');
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy text: ', err);
+                            showStatus('Failed to copy to clipboard.', 'error');
+                        });
+                }
+            });
+
+            btnFormat.addEventListener('click', async () => {
+                clearStatus();
+                const rawJson = jsonInput.value.trim();
+                if (!rawJson) {
+                    showStatus('Please paste JSON data first.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/json/format', { json: rawJson });
+                    jsonOutput.value = response.formatted;
+                    btnCopy.disabled = false;
+                    showStatus('JSON formatted successfully.', 'success');
+                } catch (error) {
+                    btnCopy.disabled = true;
+                    jsonOutput.value = '';
+                    showStatus(error.message || 'Failed to format JSON.', 'error');
+                }
+            });
+
+            btnMinify.addEventListener('click', async () => {
+                clearStatus();
+                const rawJson = jsonInput.value.trim();
+                if (!rawJson) {
+                    showStatus('Please paste JSON data first.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/json/minify', { json: rawJson });
+                    jsonOutput.value = response.minified;
+                    btnCopy.disabled = false;
+                    showStatus('JSON minified successfully.', 'success');
+                } catch (error) {
+                    btnCopy.disabled = true;
+                    jsonOutput.value = '';
+                    showStatus(error.message || 'Failed to minify JSON.', 'error');
+                }
+            });
+
+            btnValidate.addEventListener('click', async () => {
+                clearStatus();
+                const rawJson = jsonInput.value.trim();
+                if (!rawJson) {
+                    showStatus('Please paste JSON data first.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/json/validate', { json: rawJson });
+                    if (response.isValid) {
+                        showStatus('Valid JSON structure.', 'success');
+                    } else {
+                        showStatus(`Invalid JSON: ${response.errorMessage}`, 'error');
+                    }
+                } catch (error) {
+                    showStatus('Validation request failed.', 'error');
+                }
+            });
+        });
+    </script>
+}

@@ -28,7 +28,30 @@
                     </a>
                 </div>
 
+                <nav class="header-nav">
+                    <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "JsonFormatter" ? "active" : "")" asp-controller="Tools" asp-action="JsonFormatter">JSON Formatter</a>
+                    <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "JwtInspector" ? "active" : "")" asp-controller="Tools" asp-action="JwtInspector">JWT Inspector</a>
+                </nav>
 
+                <div class="header-actions">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="user-info">
+                            <span class="user-email">@User.Identity.Name</span>
+                            <span class="role-badge @(User.IsInRole("Admin") ? "admin" : "")">
+                                @(User.IsInRole("Admin") ? "Admin" : "User")
+                            </span>
+                        </div>
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                            <button type="submit" class="nav-tab-button btn-logout">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "Login" ? "active" : "")" asp-controller="Account" asp-action="Login">Login</a>
+                        <a class="nav-tab-button btn-register" asp-controller="Account" asp-action="Register">Register</a>
+                    }
+                </div>
             </div>
         </header>
 

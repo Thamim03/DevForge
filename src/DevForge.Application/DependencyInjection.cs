@@ -1,3 +1,5 @@
+using DevForge.Application.Common.Interfaces;
+using DevForge.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevForge.Application;
@@ -9,6 +11,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        services.AddSingleton<IJsonFormatterService, JsonFormatterService>();
+        services.AddSingleton<IJwtInspectorService, JwtInspectorService>();
+        
         return services;
     }
 }

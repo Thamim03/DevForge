@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "JWT Inspector";
+}
+
+<div class="tool-container">
+    <div class="tool-header">
+        <h1 class="tool-title">JWT Inspector</h1>
+        <p class="tool-subtitle">Safely decode and inspect JWT tokens locally without exposing sensitive secrets.</p>
+    </div>
+
+    <!-- Security Alert Warning (Signature validation notice) -->
+    <div class="alert alert-warning">
+        <div class="flex items-center gap-8">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <strong>Security Warning:</strong> Decoded for inspection — signature validity is NOT verified. Never enter production signing keys into public browser tools.
+        </div>
+    </div>
+
+    <div class="tool-workspace-vertical">
+        <!-- Token Input Panel -->
+        <div class="workspace-panel full-width">
+            <div class="panel-header">
+                <span class="panel-title">Paste Encoded JWT Token</span>
+                <div class="panel-actions">
+                    <button id="btnClear" class="btn btn-secondary btn-sm">Clear</button>
+                </div>
+            </div>
+            <textarea id="jwtInput" class="code-editor token-editor" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+            
+            <div class="panel-controls">
+                <button id="btnDecode" class="btn btn-primary">Decode Token</button>
+            </div>
+        </div>
+
+        <!-- Token Analysis Results (hidden by default) -->
+        <div id="decodeResults" class="hidden-results hidden">
+            <!-- Metadata & Expiration Info -->
+            <div class="results-metadata-grid">
+                <div class="metadata-card">
+                    <span class="card-label">Algorithm</span>
+                    <span id="txtAlgorithm" class="card-value">-</span>
+                </div>
+                <div class="metadata-card">
+                    <span class="card-label">Expiration Status</span>
+                    <span id="badgeExpiration" class="status-badge check">-</span>
+                </div>
+            </div>
+
+            <!-- Double-column Header/Payload Inspection -->
+            <div class="tool-workspace">
+                <div class="workspace-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Header (Decoded)</span>
+                    </div>
+                    <textarea id="headerOutput" class="code-editor editor-half" readonly></textarea>
+                </div>
+
+                <div class="workspace-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Payload (Decoded)</span>
+                    </div>
+                    <textarea id="payloadOutput" class="code-editor editor-half" readonly></textarea>
+                </div>
+            </div>
+
+            <!-- Claims Table -->
+            <div class="workspace-panel full-width" style="margin-top: 24px;">
+                <div class="panel-header">
+                    <span class="panel-title">Claims Table</span>
+                </div>
+                <div class="table-container">
+                    <table class="claims-table">
+                        <thead>
+                            <tr>
+                                <th>Claim (Key)</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claimsTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Box -->
+        <div id="statusAlert" class="status-alert error hidden">
+            <span class="status-message"></span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const jwtInput = document.getElementById('jwtInput');
+            const btnClear = document.getElementById('btnClear');
+            const btnDecode = document.getElementById('btnDecode');
+            const decodeResults = document.getElementById('decodeResults');
+            const txtAlgorithm = document.getElementById('txtAlgorithm');
+            const badgeExpiration = document.getElementById('badgeExpiration');
+            const headerOutput = document.getElementById('headerOutput');
+            const payloadOutput = document.getElementById('payloadOutput');
+            const claimsTableBody = document.getElementById('claimsTableBody');
+            const statusAlert = document.getElementById('statusAlert');
+            const statusMessage = statusAlert.querySelector('.status-message');
+
+            const showStatus = (message, type) => {
+                statusAlert.className = `status-alert ${type}`;
+                statusMessage.textContent = message;
+                statusAlert.classList.remove('hidden');
+            };
+
+            const clearStatus = () => {
+                statusAlert.className = 'status-alert hidden';
+                statusMessage.textContent = '';
+            };
+
+            btnClear.addEventListener('click', () => {
+                jwtInput.value = '';
+                headerOutput.value = '';
+                payloadOutput.value = '';
+                txtAlgorithm.textContent = '-';
+                badgeExpiration.textContent = '-';
+                badgeExpiration.className = 'status-badge check';
+                claimsTableBody.innerHTML = '';
+                decodeResults.classList.add('hidden');
+                clearStatus();
+            });
+
+            btnDecode.addEventListener('click', async () => {
+                clearStatus();
+                const token = jwtInput.value.trim();
+                if (!token) {
+                    showStatus('Please paste an encoded JWT token first.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/jwt/decode', { token: token });
+                    
+                    // Display details
+                    headerOutput.value = response.headerJson;
+                    payloadOutput.value = response.payloadJson;
+                    txtAlgorithm.textContent = response.algorithm || 'None';
+                    
+                    // Expiration Badge styling
+                    const expStatus = response.expirationStatus;
+                    badgeExpiration.textContent = expStatus;
+                    if (expStatus === 'Valid') {
+                        badgeExpiration.className = 'status-badge online';
+                    } else if (expStatus === 'Expired') {
+                        badgeExpiration.className = 'status-badge offline';
+                    } else {
+                        badgeExpiration.className = 'status-badge checking';
+                    }
+
+                    // Render claims table
+                    claimsTableBody.innerHTML = '';
+                    for (const [key, value] of Object.entries(response.claims)) {
+                        const tr = document.createElement('tr');
+                        
+                        const tdKey = document.createElement('td');
+                        tdKey.className = 'claim-key';
+                        tdKey.textContent = key;
+
+                        const tdVal = document.createElement('td');
+                        tdVal.className = 'claim-value';
+                        tdVal.textContent = value;
+
+                        tr.appendChild(tdKey);
+                        tr.appendChild(tdVal);
+                        claimsTableBody.appendChild(tr);
+                    }
+
+                    decodeResults.classList.remove('hidden');
+                } catch (error) {
+                    decodeResults.classList.add('hidden');
+                    showStatus(error.message || 'Failed to decode JWT token.', 'error');
+                }
+            });
+        });
+    </script>
+}
