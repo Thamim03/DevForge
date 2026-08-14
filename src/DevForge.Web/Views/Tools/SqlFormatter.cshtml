@@ -1,0 +1,161 @@
+@{
+    ViewData["Title"] = "SQL Formatter & Beautifier";
+}
+
+<div class="tool-container">
+    <div class="tool-header">
+        <h1 class="tool-title">SQL Formatter & Beautifier</h1>
+        <p class="tool-subtitle">Format, beautify, and minify your Transact-SQL (T-SQL) queries in real-time.</p>
+    </div>
+
+    <div class="tool-workspace">
+        <!-- Input Panel -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <span class="panel-title">Paste Input SQL</span>
+                <div class="panel-actions">
+                    <button id="btnClear" class="btn btn-secondary btn-sm">Clear</button>
+                </div>
+            </div>
+            <textarea id="sqlInput" class="code-editor" placeholder="SELECT id, name, email FROM users WHERE is_active = 1 AND role = 'Admin' ORDER BY created_at DESC;"></textarea>
+            
+            <div class="panel-controls">
+                <button id="btnFormat" class="btn btn-primary">Format / Beautify</button>
+                <button id="btnMinify" class="btn btn-secondary">Minify</button>
+            </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <span class="panel-title">Formatted T-SQL Output</span>
+                <div class="panel-actions">
+                    <button id="btnCopy" class="btn btn-secondary btn-sm" disabled>Copy Result</button>
+                </div>
+            </div>
+            <div class="output-wrapper">
+                <textarea id="sqlOutput" class="code-editor" readonly placeholder="Formatted SQL will appear here..."></textarea>
+            </div>
+
+            <!-- Status Indicator -->
+            <div id="statusAlert" class="status-alert hidden">
+                <span class="status-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sqlInput = document.getElementById('sqlInput');
+            const sqlOutput = document.getElementById('sqlOutput');
+            const btnClear = document.getElementById('btnClear');
+            const btnFormat = document.getElementById('btnFormat');
+            const btnMinify = document.getElementById('btnMinify');
+            const btnCopy = document.getElementById('btnCopy');
+            const statusAlert = document.getElementById('statusAlert');
+            const statusMessage = statusAlert.querySelector('.status-message');
+
+            const showStatus = (message, type) => {
+                statusAlert.className = `status-alert ${type}`;
+                statusMessage.textContent = message;
+                statusAlert.classList.remove('hidden');
+            };
+
+            const clearStatus = () => {
+                statusAlert.className = 'status-alert hidden';
+                statusMessage.textContent = '';
+            };
+
+            btnClear.addEventListener('click', () => {
+                sqlInput.value = '';
+                sqlOutput.value = '';
+                btnCopy.disabled = true;
+                clearStatus();
+            });
+
+            btnCopy.addEventListener('click', () => {
+                if (sqlOutput.value) {
+                    navigator.clipboard.writeText(sqlOutput.value)
+                        .then(() => {
+                            const originalText = btnCopy.textContent;
+                            btnCopy.textContent = 'Copied!';
+                            btnCopy.classList.add('btn-success');
+                            setTimeout(() => {
+                                btnCopy.textContent = originalText;
+                                btnCopy.classList.remove('btn-success');
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy text: ', err);
+                            showStatus('Failed to copy to clipboard.', 'error');
+                        });
+                }
+            });
+
+            btnFormat.addEventListener('click', async () => {
+                clearStatus();
+                const rawSql = sqlInput.value.trim();
+                if (!rawSql) {
+                    showStatus('Please paste SQL query first.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/sql/format', { sql: rawSql });
+                    
+                    if (response.isValid) {
+                        sqlOutput.value = response.formattedSql;
+                        btnCopy.disabled = false;
+                        showStatus('SQL formatted successfully.', 'success');
+                    } else {
+                        sqlOutput.value = response.formattedSql || '';
+                        btnCopy.disabled = true;
+                        
+                        // Parse validation errors
+                        const errorText = response.errors && response.errors.length > 0 
+                            ? response.errors.join('\n') 
+                            : 'Failed to format SQL due to syntax errors.';
+                        showStatus(errorText, 'error');
+                    }
+                } catch (error) {
+                    btnCopy.disabled = true;
+                    sqlOutput.value = '';
+                    showStatus(error.message || 'Failed to format SQL.', 'error');
+                }
+            });
+
+            btnMinify.addEventListener('click', async () => {
+                clearStatus();
+                const rawSql = sqlInput.value.trim();
+                if (!rawSql) {
+                    showStatus('Please paste SQL query first.', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/sql/minify', { sql: rawSql });
+                    
+                    if (response.isValid) {
+                        sqlOutput.value = response.formattedSql;
+                        btnCopy.disabled = false;
+                        showStatus('SQL minified successfully.', 'success');
+                    } else {
+                        sqlOutput.value = response.formattedSql || '';
+                        btnCopy.disabled = true;
+                        
+                        const errorText = response.errors && response.errors.length > 0 
+                            ? response.errors.join('\n') 
+                            : 'Failed to minify SQL due to syntax errors.';
+                        showStatus(errorText, 'error');
+                    }
+                } catch (error) {
+                    btnCopy.disabled = true;
+                    sqlOutput.value = '';
+                    showStatus(error.message || 'Failed to minify SQL.', 'error');
+                }
+            });
+        });
+    </script>
+}
