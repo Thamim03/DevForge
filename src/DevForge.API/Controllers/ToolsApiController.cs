@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using DevForge.Application.Common.Interfaces;
 using DevForge.Application.Common.Models;
 
 namespace DevForge.API.Controllers;
 
 /// <summary>
-/// Exposes developer tool endpoints (JSON formatting, JWT decoding).
+/// Exposes developer tool endpoints (JSON formatting, JWT decoding, SQL formatting, HTTP Playground).
 /// </summary>
 [ApiController]
 [Route("api/tools")]
@@ -13,15 +14,21 @@ public class ToolsApiController : ControllerBase
 {
     private readonly IJsonFormatterService _jsonFormatter;
     private readonly IJwtInspectorService _jwtInspector;
+    private readonly ISqlFormatterService _sqlFormatter;
+    private readonly IApiPlaygroundService _apiPlayground;
     private readonly ILogger<ToolsApiController> _logger;
 
     public ToolsApiController(
         IJsonFormatterService jsonFormatter, 
         IJwtInspectorService jwtInspector, 
+        ISqlFormatterService sqlFormatter,
+        IApiPlaygroundService apiPlayground,
         ILogger<ToolsApiController> logger)
     {
         _jsonFormatter = jsonFormatter;
         _jwtInspector = jwtInspector;
+        _sqlFormatter = sqlFormatter;
+        _apiPlayground = apiPlayground;
         _logger = logger;
     }
 
@@ -87,6 +94,41 @@ public class ToolsApiController : ControllerBase
         {
             return BadRequest(new { message = result.ErrorMessage });
         }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Formats a raw T-SQL string.
+    /// </summary>
+    [HttpPost("sql/format")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SqlFormatterResponse))]
+    public IActionResult FormatSql([FromBody] SqlFormatterRequest request)
+    {
+        var result = _sqlFormatter.Format(request);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Minifies a SQL string by stripping whitespace and comments.
+    /// </summary>
+    [HttpPost("sql/minify")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SqlFormatterResponse))]
+    public IActionResult MinifySql([FromBody] SqlFormatterRequest request)
+    {
+        var result = _sqlFormatter.Minify(request);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Executes an outbound HTTP request inside the API Playground (Requires authentication).
+    /// </summary>
+    [Authorize]
+    [HttpPost("http/request")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPlaygroundResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> ExecuteHttpRequest([FromBody] ApiPlaygroundRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _apiPlayground.SendRequestAsync(request, cancellationToken);
         return Ok(result);
     }
 }

@@ -13,6 +13,8 @@ public static class DependencyInjection
     {
         services.AddSingleton<IJsonFormatterService, JsonFormatterService>();
         services.AddSingleton<IJwtInspectorService, JwtInspectorService>();
+        services.AddSingleton<ISqlFormatterService, SqlFormatterService>();
+        services.AddScoped<IApiPlaygroundService, ApiPlaygroundService>();
         
         return services;
     }

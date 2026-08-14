@@ -24,11 +24,16 @@ const ApiClient = {
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
 
         try {
+            const headers = {
+                'Accept': 'application/json'
+            };
+            if (window.DevForgeConfig?.token) {
+                headers['Authorization'] = `Bearer ${window.DevForgeConfig.token}`;
+            }
+
             const response = await fetch(url, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json'
-                },
+                headers: headers,
                 signal: controller.signal
             });
 
@@ -54,12 +59,17 @@ const ApiClient = {
         const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
 
         try {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+            if (window.DevForgeConfig?.token) {
+                headers['Authorization'] = `Bearer ${window.DevForgeConfig.token}`;
+            }
+
             const response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: headers,
                 body: JSON.stringify(body),
                 signal: controller.signal
             });

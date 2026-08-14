@@ -45,7 +45,7 @@ public class AccountController : Controller
 
         try
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = GetApiClient();
             var apiResponse = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest
             {
                 UsernameOrEmail = model.UsernameOrEmail,
@@ -132,7 +132,7 @@ public class AccountController : Controller
 
         try
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = GetApiClient();
             var apiResponse = await client.PostAsJsonAsync("/api/auth/register", new RegisterRequest
             {
                 Username = model.Username,
@@ -172,6 +172,25 @@ public class AccountController : Controller
     public IActionResult AccessDenied()
     {
         return View();
+    }
+
+    private HttpClient GetApiClient()
+    {
+        var client = _httpClientFactory.CreateClient("ApiClient");
+        
+        var request = HttpContext.Request;
+        var hostPort = request.Host.Port;
+        
+        if (hostPort == 44373 || hostPort == 64202)
+        {
+            client.BaseAddress = new Uri(request.IsHttps ? "https://localhost:44305" : "http://localhost:64153");
+        }
+        else if (hostPort == 7246 || hostPort == 5251)
+        {
+            client.BaseAddress = new Uri(request.IsHttps ? "https://localhost:7172" : "http://localhost:5057");
+        }
+        
+        return client;
     }
 
     private class ApiErrorResponse

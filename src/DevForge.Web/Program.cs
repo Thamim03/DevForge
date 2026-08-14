@@ -20,10 +20,18 @@ builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.C
     });
 
 // Add HttpClient for communicating with DevForge.API
-builder.Services.AddHttpClient("ApiClient", client =>
+var httpClientBuilder = builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5057");
 });
+
+if (builder.Environment.IsDevelopment())
+{
+    httpClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
+}
 
 var app = builder.Build();
 

@@ -39,6 +39,13 @@ try
     // Add API Controllers and JSON options
     builder.Services.AddControllers();
 
+    // Register HttpClient Factory
+    builder.Services.AddHttpClient();
+    builder.Services.AddHttpClient("ApiPlaygroundClient", client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(10);
+    });
+
     // Register Clean Architecture layers
     builder.Services.AddApplicationServices();
     builder.Services.AddInfrastructureServices(builder.Configuration);

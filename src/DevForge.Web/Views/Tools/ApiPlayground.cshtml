@@ -1,0 +1,513 @@
+@{
+    ViewData["Title"] = "API Playground";
+}
+
+<style>
+    .request-address-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+    }
+
+    .method-select {
+        width: 120px;
+        background-color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-heading);
+        border-radius: var(--radius-sm);
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    .url-input {
+        flex: 1;
+        background-color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-heading);
+        border-radius: var(--radius-sm);
+        padding: 10px 16px;
+        box-sizing: border-box;
+    }
+
+    .method-select:focus, .url-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+
+    .playground-tabs {
+        display: flex;
+        gap: 20px;
+        border-bottom: 1px solid var(--border-color);
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+
+    .playground-tab-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-weight: 500;
+        padding: 8px 4px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+    .playground-tab-btn:hover {
+        color: var(--text-heading);
+    }
+
+    .playground-tab-btn.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .playground-tab-content {
+        display: none;
+    }
+
+    .playground-tab-content.active {
+        display: block;
+    }
+
+    .kv-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: center;
+    }
+
+    .kv-input {
+        flex: 1;
+        background-color: var(--bg-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-heading);
+        border-radius: var(--radius-sm);
+        padding: 8px 12px;
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+    }
+
+    .kv-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+    }
+
+    .btn-remove-kv {
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--danger-color);
+        border-radius: var(--radius-sm);
+        padding: 8px 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-kv:hover {
+        background-color: var(--danger-bg);
+        border-color: var(--danger-border);
+    }
+
+    .response-metrics {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .metric-badge {
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+    }
+
+    .metric-badge.success {
+        background-color: var(--success-bg);
+        border-color: var(--success-border);
+        color: var(--success-color);
+    }
+
+    .metric-badge.error {
+        background-color: var(--danger-bg);
+        border-color: var(--danger-border);
+        color: var(--danger-color);
+    }
+
+    .metric-badge.info {
+        background-color: var(--accent-bg);
+        border-color: var(--border-color);
+        color: var(--accent-color);
+    }
+
+    .section-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+        margin-bottom: 6px;
+    }
+
+    .response-headers-area {
+        min-height: 120px !important;
+        font-size: 0.85rem !important;
+        padding: 12px !important;
+    }
+
+    .response-body-area {
+        min-height: 300px !important;
+        font-size: 0.85rem !important;
+        padding: 12px !important;
+    }
+
+    .body-textarea {
+        min-height: 250px !important;
+    }
+
+    .mt-3 {
+        margin-top: 16px;
+    }
+</style>
+
+<div class="tool-container">
+    <div class="tool-header">
+        <h1 class="tool-title">API Playground</h1>
+        <p class="tool-subtitle">A lightweight tool to compose and execute HTTP requests from the DevForge server.</p>
+    </div>
+
+    <div class="tool-workspace">
+        <!-- Request Builder -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <span class="panel-title">Request Builder</span>
+            </div>
+
+            <!-- Address Bar -->
+            <div class="request-address-bar">
+                <select id="requestMethod" class="method-select">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+                <input id="requestUrl" type="url" class="url-input" placeholder="https://api.github.com/users/octocat" required />
+            </div>
+
+            <!-- Request Configuration Tabs -->
+            <div class="playground-tabs">
+                <button type="button" class="playground-tab-btn active" data-tab="queryParams">Query Params</button>
+                <button type="button" class="playground-tab-btn" data-tab="headers">Headers</button>
+                <button type="button" class="playground-tab-btn" id="bodyTabBtn" data-tab="body">Body (JSON)</button>
+            </div>
+
+            <!-- Tab Panels -->
+            <div class="tab-panels">
+                <!-- Query Parameters Panel -->
+                <div id="tab-queryParams" class="playground-tab-content active">
+                    <div id="queryParamsContainer">
+                        <!-- Dynamic Rows -->
+                    </div>
+                    <button type="button" id="btnAddQueryParam" class="btn btn-secondary btn-sm mt-2">+ Add Parameter</button>
+                </div>
+
+                <!-- Headers Panel -->
+                <div id="tab-headers" class="playground-tab-content">
+                    <div id="headersContainer">
+                        <!-- Dynamic Rows -->
+                    </div>
+                    <button type="button" id="btnAddHeader" class="btn btn-secondary btn-sm mt-2">+ Add Header</button>
+                </div>
+
+                <!-- Body Panel -->
+                <div id="tab-body" class="playground-tab-content">
+                    <textarea id="requestBody" class="code-editor body-textarea" placeholder='{
+  "name": "John Doe",
+  "email": "john.doe@example.com"
+}'></textarea>
+                </div>
+            </div>
+
+            <div class="panel-controls">
+                <button id="btnSendRequest" class="btn btn-primary">Send Request</button>
+            </div>
+        </div>
+
+        <!-- Response Viewer -->
+        <div class="workspace-panel">
+            <div class="panel-header">
+                <span class="panel-title">Response</span>
+                <div class="panel-actions">
+                    <button id="btnCopyResponse" class="btn btn-secondary btn-sm" disabled>Copy Response</button>
+                </div>
+            </div>
+
+            <!-- Metrics -->
+            <div id="responseMetrics" class="response-metrics hidden">
+                <div id="badgeStatus" class="metric-badge info">Status: -</div>
+                <div id="badgeTime" class="metric-badge info">Time: - ms</div>
+            </div>
+
+            <!-- Output Viewers -->
+            <div>
+                <div class="section-label">Response Headers</div>
+                <textarea id="responseHeaders" class="code-editor response-headers-area" readonly placeholder="Response headers will be displayed here..."></textarea>
+
+                <div class="section-label mt-3">Response Body</div>
+                <textarea id="responseBody" class="code-editor response-body-area" readonly placeholder="Response body will be displayed here..."></textarea>
+            </div>
+
+            <!-- Status Alert -->
+            <div id="playgroundStatusAlert" class="status-alert hidden">
+                <span class="status-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const requestMethod = document.getElementById('requestMethod');
+            const requestUrl = document.getElementById('requestUrl');
+            const requestBody = document.getElementById('requestBody');
+            
+            const btnSendRequest = document.getElementById('btnSendRequest');
+            const btnCopyResponse = document.getElementById('btnCopyResponse');
+            
+            const responseMetrics = document.getElementById('responseMetrics');
+            const badgeStatus = document.getElementById('badgeStatus');
+            const badgeTime = document.getElementById('badgeTime');
+            const responseHeaders = document.getElementById('responseHeaders');
+            const responseBody = document.getElementById('responseBody');
+            
+            const statusAlert = document.getElementById('playgroundStatusAlert');
+            const statusMessage = statusAlert.querySelector('.status-message');
+            
+            const queryParamsContainer = document.getElementById('queryParamsContainer');
+            const btnAddQueryParam = document.getElementById('btnAddQueryParam');
+            
+            const headersContainer = document.getElementById('headersContainer');
+            const btnAddHeader = document.getElementById('btnAddHeader');
+            
+            const bodyTabBtn = document.getElementById('bodyTabBtn');
+
+            // --- Status Alert Handlers ---
+            const showStatus = (message, type) => {
+                statusAlert.className = `status-alert ${type}`;
+                statusMessage.textContent = message;
+                statusAlert.classList.remove('hidden');
+            };
+
+            const clearStatus = () => {
+                statusAlert.className = 'status-alert hidden';
+                statusMessage.textContent = '';
+            };
+
+            // --- Tab Handling ---
+            const tabs = document.querySelectorAll('.playground-tab-btn');
+            const contents = document.querySelectorAll('.playground-tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    const target = document.getElementById(`tab-${tab.dataset.tab}`);
+                    if (target) {
+                        target.classList.add('active');
+                    }
+                });
+            });
+
+            // Adjust UI based on method selected
+            const adjustBodyTabState = () => {
+                const method = requestMethod.value;
+                if (method === 'GET' || method === 'DELETE') {
+                    bodyTabBtn.style.opacity = '0.5';
+                    bodyTabBtn.title = 'Request body is not supported for GET/DELETE requests.';
+                    requestBody.disabled = true;
+                } else {
+                    bodyTabBtn.style.opacity = '1';
+                    bodyTabBtn.removeAttribute('title');
+                    requestBody.disabled = false;
+                }
+            };
+            requestMethod.addEventListener('change', adjustBodyTabState);
+            adjustBodyTabState();
+
+            // --- Dynamic Row Management ---
+            const addKeyValueRow = (container, defaultKey = '', defaultValue = '') => {
+                const row = document.createElement('div');
+                row.className = 'kv-row';
+
+                const keyInput = document.createElement('input');
+                keyInput.type = 'text';
+                keyInput.className = 'kv-input kv-key';
+                keyInput.placeholder = 'Key';
+                keyInput.value = defaultKey;
+
+                const valueInput = document.createElement('input');
+                valueInput.type = 'text';
+                valueInput.className = 'kv-input kv-value';
+                valueInput.placeholder = 'Value';
+                valueInput.value = defaultValue;
+
+                const btnRemove = document.createElement('button');
+                btnRemove.type = 'button';
+                btnRemove.className = 'btn-remove-kv';
+                btnRemove.textContent = '✕';
+                btnRemove.addEventListener('click', () => {
+                    row.remove();
+                });
+
+                row.appendChild(keyInput);
+                row.appendChild(valueInput);
+                row.appendChild(btnRemove);
+                container.appendChild(row);
+            };
+
+            btnAddQueryParam.addEventListener('click', () => addKeyValueRow(queryParamsContainer));
+            btnAddHeader.addEventListener('click', () => addKeyValueRow(headersContainer));
+
+            // Seed default header
+            addKeyValueRow(headersContainer, 'Accept', 'application/json');
+
+            // --- Copy Response Handling ---
+            btnCopyResponse.addEventListener('click', () => {
+                if (responseBody.value) {
+                    navigator.clipboard.writeText(responseBody.value)
+                        .then(() => {
+                            const originalText = btnCopyResponse.textContent;
+                            btnCopyResponse.textContent = 'Copied!';
+                            btnCopyResponse.classList.add('btn-success');
+                            setTimeout(() => {
+                                btnCopyResponse.textContent = originalText;
+                                btnCopyResponse.classList.remove('btn-success');
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy response: ', err);
+                            showStatus('Failed to copy to clipboard.', 'error');
+                        });
+                }
+            });
+
+            // --- Send Request Execution ---
+            btnSendRequest.addEventListener('click', async () => {
+                clearStatus();
+                btnCopyResponse.disabled = true;
+                responseMetrics.classList.add('hidden');
+                responseHeaders.value = '';
+                responseBody.value = '';
+
+                const url = requestUrl.value.trim();
+                if (!url) {
+                    showStatus('Please enter a valid request URL.', 'warning');
+                    return;
+                }
+
+                // Gather Query Parameters
+                const queryParameters = {};
+                queryParamsContainer.querySelectorAll('.kv-row').forEach(row => {
+                    const key = row.querySelector('.kv-key').value.trim();
+                    const val = row.querySelector('.kv-value').value;
+                    if (key) {
+                        queryParameters[key] = val;
+                    }
+                });
+
+                // Gather Headers
+                const headers = {};
+                headersContainer.querySelectorAll('.kv-row').forEach(row => {
+                    const key = row.querySelector('.kv-key').value.trim();
+                    const val = row.querySelector('.kv-value').value;
+                    if (key) {
+                        headers[key] = val;
+                    }
+                });
+
+                // Request body
+                const method = requestMethod.value;
+                let body = null;
+                if (method === 'POST' || method === 'PUT') {
+                    body = requestBody.value.trim();
+                }
+
+                const requestPayload = {
+                    method: method,
+                    url: url,
+                    headers: headers,
+                    queryParameters: queryParameters,
+                    body: body
+                };
+
+                const originalBtnText = btnSendRequest.textContent;
+                btnSendRequest.textContent = 'Sending...';
+                btnSendRequest.disabled = true;
+
+                try {
+                    const response = await window.ApiClient.post('/api/tools/http/request', requestPayload);
+                    
+                    btnSendRequest.textContent = originalBtnText;
+                    btnSendRequest.disabled = false;
+
+                    // Display Metrics
+                    responseMetrics.classList.remove('hidden');
+                    
+                    const code = response.statusCode;
+                    badgeStatus.textContent = `Status: ${code} ${response.statusDescription || ''}`;
+                    badgeTime.textContent = `Time: ${response.responseTimeMs} ms`;
+                    
+                    if (code >= 200 && code < 300) {
+                        badgeStatus.className = 'metric-badge success';
+                    } else {
+                        badgeStatus.className = 'metric-badge error';
+                    }
+
+                    // Display Headers
+                    let headersStr = '';
+                    if (response.headers) {
+                        for (const [k, v] of Object.entries(response.headers)) {
+                            headersStr += `${k}: ${v}\n`;
+                        }
+                    }
+                    responseHeaders.value = headersStr.trim();
+
+                    // Display Body (pretty-print JSON if possible)
+                    const rawBody = response.body || '';
+                    if (rawBody) {
+                        try {
+                            const parsedJson = JSON.parse(rawBody);
+                            responseBody.value = JSON.stringify(parsedJson, null, 2);
+                        } catch {
+                            // Display as raw text
+                            responseBody.value = rawBody;
+                        }
+                        btnCopyResponse.disabled = false;
+                    } else {
+                        responseBody.value = '[Empty Response Body]';
+                    }
+
+                    // Handle application errors returned from playground backend
+                    if (response.errorMessage) {
+                        showStatus(response.errorMessage, 'error');
+                    } else {
+                        showStatus('Request executed successfully.', 'success');
+                    }
+                } catch (error) {
+                    btnSendRequest.textContent = originalBtnText;
+                    btnSendRequest.disabled = false;
+                    showStatus(error.message || 'An error occurred while executing the HTTP request.', 'error');
+                }
+            });
+        });
+    </script>
+}

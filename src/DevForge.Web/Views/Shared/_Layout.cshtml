@@ -9,7 +9,8 @@
     <script>
         // Inject configuration variables directly from appsettings.json into Javascript context
         window.DevForgeConfig = {
-            apiUrl: '@Configuration["ApiSettings:BaseUrl"]'
+            apiUrl: '@Configuration["ApiSettings:BaseUrl"]',
+            token: '@(User.Identity?.IsAuthenticated == true ? User.FindFirst("Token")?.Value : "")'
         };
     </script>
 </head>
@@ -31,6 +32,8 @@
                 <nav class="header-nav">
                     <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "JsonFormatter" ? "active" : "")" asp-controller="Tools" asp-action="JsonFormatter">JSON Formatter</a>
                     <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "JwtInspector" ? "active" : "")" asp-controller="Tools" asp-action="JwtInspector">JWT Inspector</a>
+                    <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "SqlFormatter" ? "active" : "")" asp-controller="Tools" asp-action="SqlFormatter">SQL Formatter</a>
+                    <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "ApiPlayground" ? "active" : "")" asp-controller="Tools" asp-action="ApiPlayground">API Playground</a>
                 </nav>
 
                 <div class="header-actions">
