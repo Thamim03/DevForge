@@ -45,6 +45,9 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<DbContextInitializer>();
 
+        // Register Challenge Service
+        services.AddScoped<IChallengeService, ChallengeService>();
+
         return services;
     }
 }

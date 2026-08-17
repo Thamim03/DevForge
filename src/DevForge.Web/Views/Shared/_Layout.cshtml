@@ -34,6 +34,7 @@
                     <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "JwtInspector" ? "active" : "")" asp-controller="Tools" asp-action="JwtInspector">JWT Inspector</a>
                     <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "SqlFormatter" ? "active" : "")" asp-controller="Tools" asp-action="SqlFormatter">SQL Formatter</a>
                     <a class="nav-tab-button @(ViewContext.RouteData.Values["action"]?.ToString() == "ApiPlayground" ? "active" : "")" asp-controller="Tools" asp-action="ApiPlayground">API Playground</a>
+                    <a class="nav-tab-button @(ViewContext.RouteData.Values["controller"]?.ToString() == "Challenge" ? "active" : "")" asp-controller="Challenge" asp-action="Index">.NET Challenge</a>
                 </nav>
 
                 <div class="header-actions">
