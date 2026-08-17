@@ -20,6 +20,12 @@ public class ApplicationDbContext : DbContext
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<UserRole> UserRoles => Set<UserRole>();
 
+    // Challenge entities
+    public DbSet<Question> Questions => Set<Question>();
+    public DbSet<QuestionOption> QuestionOptions => Set<QuestionOption>();
+    public DbSet<ChallengeAttempt> ChallengeAttempts => Set<ChallengeAttempt>();
+    public DbSet<ChallengeAnswer> ChallengeAnswers => Set<ChallengeAnswer>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
